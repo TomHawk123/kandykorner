@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+// import KandyKorner from "./components/KandyKorner.js"
 import reportWebVitals from './reportWebVitals';
+import { LocationList } from './components/locations/LocationList';
+import { ProductList } from './components/products/ProductList';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {/* <KandyKorner /> */}
+    <LocationList />
+    <ProductList />
   </React.StrictMode>,
   document.getElementById('root')
 );
