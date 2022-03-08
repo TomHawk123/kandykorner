@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react"
-import { fetchEmployees } from "../ApiManager"
+import { fetchEmployees, fetchEmployeesWithLocations } from "../ApiManager"
+import { useHistory } from "react-router-dom"
 
 export const EmployeeList = () => {
+
+    const history = useHistory()
+
     const [employees, setEmployee] = useState([])
 
     useEffect(
         () => {
-            fetchEmployees()
+            fetchEmployeesWithLocations()
                 .then((employeeArray) => {
                     setEmployee(employeeArray)
                 })
         },
-        []
+        [employees]
     )
 
     return (
         <>
             <h2>Employee List</h2>
+            <button onClick={() => history.push("/employees/create")}>Hire Employee</button>
+
             {
                 employees.map(employee =>
                     <p key={`employee--${employee.id}`}>
