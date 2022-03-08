@@ -7,39 +7,43 @@
 
 
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useHistory } from "react-router-dom";
-import { sendEmployee } from "../ApiManager";
-import { LocationList } from "../locations/LocationList";
+import { fetchLocations, sendEmployee } from "../ApiManager";
 
 
 export const EmployeeForm = () => {
 
     const history = useHistory()
 
-    const [employee, update] = useState()
+    const [employee, update] = useState({
+        "name": "",
+        "manager": false,
+        "fullTime": false,
+        "hourlyRate": 0,
+        "locationId": ""
+    })
 
-    // const [locations, updateLocations] = useState([])
-    // useEffect(() => {
-    //     getAllLocations()
-    //         .then(
-    //             (location) => {
-    //                 updateLocations(location)
-    //             }
-    //         )
-    // }, [])
+    const [locations, updateLocations] = useState([])
+    useEffect(() => {
+        fetchLocations()
+            .then(
+                (location) => {
+                    updateLocations(location)
+                }
+            )
+    }, [])
 
 
     const submitEmployee = e => {
         e.preventDefault()
 
         const newEmployee = {
-            name: "",
-            location: null,
-            manager: false,
-            fullTime: false,
-            hourlyRate: null
-            // locationId: parseInt(employee.locationId)
+            name: employee.name,
+            manager: employee.manager,
+            fullTime: employee.fullTime,
+            hourlyRate: employee.hourlyRate,
+            locationId: parseInt(employee.locationId)
 
         }
 
@@ -62,9 +66,9 @@ export const EmployeeForm = () => {
                         className="form-control"
                         placeholder="Full Name"
                         onChange={
-                            (evt) => {
+                            (e) => {
                                 const copy = { ...employee }
-                                copy.name = evt.target.value
+                                copy.name = e.target.value
                                 update(copy)
                             }
 
@@ -74,15 +78,16 @@ export const EmployeeForm = () => {
             <fieldset>
                 <div className="form-group">
                     <label htmlFor="name">Location</label>
-                    <select name ="location" type="select"
+                    <select name="location" type="select"
+                        required autoFocus
                         onChange={
-                            e=> {
+                            e => {
                                 const copy = { ...employee }
                                 copy.locationId = e.target.value
                                 update(copy)
                             }
                         }>
-                        
+
                         <option value="" disabled selected hidden>Location applying for...</option>
                         {locations.map(location => <option value={location.id}>{location.name}</option>)}
 
@@ -91,15 +96,14 @@ export const EmployeeForm = () => {
             </fieldset>
             <fieldset>
                 <div className="form-group">
-                    <label htmlFor="name">Specialty</label>
-                    <input type="text"
+                    <label htmlFor="name">Manager</label>
+                    <input type="checkbox"
                         required autoFocus
                         className="form-control"
-                        placeholder="Specialty"
                         onChange={
                             e => {
                                 const copy = { ...employee }
-                                copy.specialty = e.target.value
+                                copy.manager = Boolean(e.target.value)
                                 update(copy)
                             }
                         }
@@ -107,7 +111,39 @@ export const EmployeeForm = () => {
                 </div>
             </fieldset>
             <fieldset>
-                {/* <div className="form-group">
+                <div className="form-group">
+                    <label htmlFor="name">Full-Time</label>
+                    <input type="checkbox"
+                        required autoFocus
+                        className="form-control"
+                        onChange={
+                            e => {
+                                const copy = { ...employee }
+                                copy.fullTime = e.target.checked
+                                update(copy)
+                            }
+                        }
+                    />
+                </div>
+            </fieldset>
+            <fieldset>
+                <div className="form-group">
+                    <label htmlFor="name">Hourly Rate $</label>
+                    <input inputmode="numeric" min="7.25" max="25"
+                        required autoFocus
+                        className="form-control"
+                        onChange={
+                            e => {
+                                const copy = { ...employee }
+                                copy.hourlyRate = e.target.value
+                                update(copy)
+                            }
+                        }
+                    />
+                </div>
+            </fieldset>
+            {/* <fieldset> */}
+            {/* <div className="form-group">
                     <label htmlFor="name">Location</label>
                     <select name="location" type="select"
                         onChange={
@@ -124,9 +160,9 @@ export const EmployeeForm = () => {
                     </select>
 
                 </div> */}
-            </fieldset>
+            {/* </fieldset> */}
             <button className="btn btn-primary" onClick={submitEmployee}>
-                Hire Employee
+                Submit Employee
             </button>
         </form>
     )
